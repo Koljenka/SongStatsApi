@@ -1,11 +1,16 @@
 package de.knagel.songstatsapi.model
 
+import java.time.Duration
 import java.util.*
 
 data class TimeFrame(
-        val from: Long,
-        val to: Long
+    val start: Long,
+    val end: Long
 ) {
-    val fromDate: Date = Date(from)
-    val toDate: Date = Date(to)
+    fun startDate(): Date = Date(start)
+    fun endDate(): Date = Date(end)
+    fun toDuration(): Duration = Duration.ofMillis(end - start)
+    override fun toString(): String {
+        return "TimeFrame(from=$start(${startDate()}), to=$end(${endDate()}))"
+    }
 }
