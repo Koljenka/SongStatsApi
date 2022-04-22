@@ -6,34 +6,35 @@ import java.util.concurrent.TimeUnit
 
 object AlbumAnalyser {
 
-    fun analyseAll(statRequest: StatRequest): List<BoxStat> {
-        return listOfNotNull(
+    fun analyseAll(statRequest: StatRequest): List<BoxStat> =
+        if (statRequest.album.totalTracks < 2) emptyList()
+        else listOfNotNull(
             analyseIsSongLongest(statRequest),
             analyseIsSongShortest(statRequest)
         )
-    }
 
-
-    private val analyseIsSongLongest = StatAnalyser { (_, track, album) ->
+    private fun analyseIsSongLongest(statRequest: StatRequest): BoxStat? {
+        val (_, track, album) = statRequest
         if (album.tracks.maxByOrNull { t -> t.duration }?.id == track.id) {
-            return@StatAnalyser BoxStat(
+            return BoxStat(
                 msToTime(track.duration.toLong()),
                 "No other Song in the Album '${album.name}' is as long as '${track.name}'",
                 "access_time"
             )
         }
-        return@StatAnalyser null
+        return null
     }
 
-    private val analyseIsSongShortest = StatAnalyser { (_, track, album) ->
+    private fun analyseIsSongShortest(statRequest: StatRequest): BoxStat? {
+        val (_, track, album) = statRequest
         if (album.tracks.minByOrNull { t -> t.duration }?.id == track.id) {
-           return@StatAnalyser BoxStat(
+            return BoxStat(
                 msToTime(track.duration.toLong()),
                 "No other Song in the Album '${album.name}' is as short as '${track.name}'",
                 "access_time"
             )
         }
-       return@StatAnalyser null
+        return null
     }
 
     private fun msToTime(millis: Long): String {

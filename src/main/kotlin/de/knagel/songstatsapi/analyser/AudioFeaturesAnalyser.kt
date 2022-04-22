@@ -19,28 +19,30 @@ class AudioFeaturesAnalyser(private val request: StatRequest) {
         )
     }
 
-    private val analyseIsHighestHappiness = StatAnalyser { (_, track, album) ->
+    private fun analyseIsHighestHappiness(statRequest: StatRequest): BoxStat? {
+        val (_, track, album) = statRequest
         val max = audioFeatures.maxByOrNull { aF -> aF.valence }
         if (max?.id == track.id) {
-            return@StatAnalyser BoxStat(
-                "${String.format(Locale.ENGLISH,"%.2f", max.valence * 100)}% Happy!",
+            return BoxStat(
+                "${String.format(Locale.ENGLISH, "%.2f", max.valence * 100)}% Happy!",
                 "No other Song in '${album.name}' is as happy as '${track.name}'",
                 "mood"
             )
         }
-        return@StatAnalyser null
+        return null
     }
 
-    private val analyseIsFastest = StatAnalyser { (_, track, album) ->
+    private fun analyseIsFastest(statRequest: StatRequest): BoxStat? {
+        val (_, track, album) = statRequest
         val max = audioFeatures.maxByOrNull { aF -> aF.tempo }
         if (max?.id == track.id) {
-            return@StatAnalyser BoxStat(
+            return BoxStat(
                 "Speed of Light",
                 "With ${max.tempo.roundToInt()}bpm is '${track.name}' the fastest Song in '${album.name}'",
                 "speed"
             )
         }
-        return@StatAnalyser null
+        return null
     }
 
 }
