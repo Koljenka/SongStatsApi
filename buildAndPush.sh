@@ -1,6 +1,6 @@
 #!/bin/bash
-VERSION=0.0.1
-gradle jar
+VERSION=0.0.2
+gradle bootJar
 docker build -t kojenka/spotify-songstats-api:$VERSION .
 docker tag kojenka/spotify-songstats-api:$VERSION kojenka/spotify-songstats-api:latest
 docker push kojenka/spotify-songstats-api:$VERSION
