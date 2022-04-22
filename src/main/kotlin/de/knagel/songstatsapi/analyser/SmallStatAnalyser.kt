@@ -18,7 +18,7 @@ import kotlin.collections.ArrayList
 object SmallStatAnalyser {
 
     fun analyseAll(smallStatRequest: SmallStatRequest): List<SmallStat> {
-        val pool = Executors.newFixedThreadPool(8)
+        val pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
         val future = pool.invokeAll(listOf(
             Callable { getTotalTracksStat(smallStatRequest) },
             Callable { getUniqueTracksStat(smallStatRequest) },
