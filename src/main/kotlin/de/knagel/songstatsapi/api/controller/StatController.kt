@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class StatController {
 
-    @CrossOrigin(origins = ["http://localhost"])
+    @CrossOrigin(origins = ["*"])
     @PostMapping("/stats")
     fun stats(@RequestBody statsRequest: StatRequest): ApiResponse {
         val statList = emptyList<BoxStat>()
