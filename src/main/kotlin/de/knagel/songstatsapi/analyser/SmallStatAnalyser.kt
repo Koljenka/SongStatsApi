@@ -20,10 +20,10 @@ object SmallStatAnalyser {
     fun analyseAll(smallStatRequest: SmallStatRequest): List<SmallStat> {
         val pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
         val future = pool.invokeAll(listOf(
-            Callable { getTotalTracksStat(smallStatRequest) },
-            Callable { getUniqueTracksStat(smallStatRequest) },
+            //Callable { getTotalTracksStat(smallStatRequest) },
+            //Callable { getUniqueTracksStat(smallStatRequest) },
             Callable { getUniqueArtistStat(smallStatRequest) },
-            Callable { getMostActiveDayStat(smallStatRequest) },
+            //Callable { getMostActiveDayStat(smallStatRequest) },
             Callable { getAverageHappinessStat(smallStatRequest) },
             Callable { getAverageEnergyStat(smallStatRequest) },
             Callable { getAverageDanceabilityStat(smallStatRequest) },
