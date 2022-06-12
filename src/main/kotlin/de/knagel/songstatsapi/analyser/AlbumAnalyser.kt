@@ -18,7 +18,7 @@ object AlbumAnalyser {
         if (album.tracks.maxByOrNull { t -> t.duration }?.id == track.id) {
             return BoxStat(
                 msToTime(track.duration.toLong()),
-                "No other Song in the Album '${album.name}' is as long as '${track.name}'",
+                "No other song in ${album.name} is as long as ${track.name}",
                 "access_time"
             )
         }
@@ -30,7 +30,7 @@ object AlbumAnalyser {
         if (album.tracks.minByOrNull { t -> t.duration }?.id == track.id) {
             return BoxStat(
                 msToTime(track.duration.toLong()),
-                "No other Song in the Album '${album.name}' is as short as '${track.name}'",
+                "No other song in ${album.name} is as short as ${track.name}",
                 "access_time"
             )
         }

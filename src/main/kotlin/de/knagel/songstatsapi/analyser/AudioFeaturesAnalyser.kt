@@ -25,7 +25,7 @@ class AudioFeaturesAnalyser(private val request: StatRequest) {
         if (max?.id == track.id) {
             return BoxStat(
                 "${String.format(Locale.ENGLISH, "%.2f", max.valence * 100)}% Happy!",
-                "No other Song in '${album.name}' is as happy as '${track.name}'",
+                "No other song in ${album.name} is as happy as ${track.name}",
                 "mood"
             )
         }
@@ -38,7 +38,7 @@ class AudioFeaturesAnalyser(private val request: StatRequest) {
         if (max?.id == track.id) {
             return BoxStat(
                 "Speed of Light",
-                "With ${max.tempo.roundToInt()}bpm is '${track.name}' the fastest Song in '${album.name}'",
+                "With ${max.tempo.roundToInt()}bpm is ${track.name} the fastest song in ${album.name}",
                 "speed"
             )
         }

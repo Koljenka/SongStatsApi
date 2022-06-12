@@ -2,6 +2,7 @@ package de.knagel.songstatsapi.api.controller
 
 import de.knagel.songstatsapi.analyser.AlbumAnalyser
 import de.knagel.songstatsapi.analyser.AudioFeaturesAnalyser
+import de.knagel.songstatsapi.analyser.PersonalSongStatsAnalyzer
 import de.knagel.songstatsapi.analyser.SmallStatAnalyser
 import de.knagel.songstatsapi.model.BoxStat
 import de.knagel.songstatsapi.model.SmallStat
@@ -25,6 +26,17 @@ class StatController {
         val statList = emptyList<BoxStat>()
             .union(AlbumAnalyser.analyseAll(statsRequest))
             .union(AudioFeaturesAnalyser(statsRequest).analyseAll())
+            .toList()
+
+        return if (statList.isNotEmpty()) BoxStatResponse(statList) else NoStatsFoundResponse
+    }
+
+    @CrossOrigin(origins = ["*"])
+    @PostMapping("/slowStats")
+    fun slowStats(@RequestBody statsRequest: StatRequest): ApiResponse {
+
+        val statList = emptyList<BoxStat>()
+            .union(PersonalSongStatsAnalyzer(statsRequest).analyseAll())
             .toList()
 
         return if (statList.isNotEmpty()) BoxStatResponse(statList) else NoStatsFoundResponse

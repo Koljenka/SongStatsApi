@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "de.knagel"
-version = "0.1.2"
+version = "0.2.0"
 java.sourceCompatibility = JavaVersion.VERSION_16
 
 repositories {
@@ -19,6 +19,7 @@ dependencies {
     implementation("se.michaelthelin.spotify:spotify-web-api-java:7.0.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
