@@ -21,7 +21,7 @@ class SpringDocConfiguration {
                 Info()
                     .title("Spotify-Api")
                     .description("All endpoints of the personal Spotify-Api")
-                    .version("2.0.1")
+                    .version("2.1.0")
             )
     }
 }

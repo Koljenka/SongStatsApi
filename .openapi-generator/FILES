@@ -5,7 +5,6 @@ src/main/kotlin/de/knagel/songstats/Application.kt
 src/main/kotlin/de/knagel/songstats/HomeController.kt
 src/main/kotlin/de/knagel/songstats/SpringDocConfiguration.kt
 src/main/kotlin/de/knagel/songstats/api/ApiUtil.kt
-src/main/kotlin/de/knagel/songstats/api/Exceptions.kt
 src/main/kotlin/de/knagel/songstats/api/StatisticsApiController.kt
 src/main/kotlin/de/knagel/songstats/api/StatisticsApiService.kt
 src/main/kotlin/de/knagel/songstats/model/ApiAlbum.kt
@@ -22,3 +21,4 @@ src/main/kotlin/de/knagel/songstats/model/StatRequest.kt
 src/main/kotlin/de/knagel/songstats/model/Timeframe.kt
 src/main/resources/application.yaml
 src/main/resources/openapi.yaml
+src/test/kotlin/de/knagel/songstats/api/StatisticsApiTest.kt
