@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=0.2.0
+VERSION=2.1.0
 gradle clean
 gradle bootJar
 docker build -t kojenka/spotify-songstats-api:$VERSION .
