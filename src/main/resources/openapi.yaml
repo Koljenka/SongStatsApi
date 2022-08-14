@@ -1,0 +1,535 @@
+openapi: 3.0.3
+info:
+  description: All endpoints of the personal Spotify-Api
+  title: Spotify-Api
+  version: 2.0.1
+servers:
+- description: Api Server
+  url: "{scheme}://{host}/spotify-api"
+  variables:
+    scheme:
+      default: https
+      enum:
+      - https
+      - http
+    host:
+      default: kolkie.de
+      enum:
+      - kolkie.de
+      - localhost:8080
+paths:
+  /Statistics/Box/NormalStats:
+    post:
+      operationId: getNormalBoxStats
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BoxStat'
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets BoxStats for the given song if any are found
+      tags:
+      - Statistics
+  /Statistics/Box/SlowStats:
+    post:
+      operationId: getSlowBoxStats
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/getSlowBoxStats_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BoxStat'
+                type: array
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets difficult to calculate BoxStats for the given song if any are
+        found
+      tags:
+      - Statistics
+  /Statistics/Small/UniqueArtist:
+    post:
+      operationId: getUniqueArtistStat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmallStatRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmallStat'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      summary: Gets the unique artists for the given timeframe
+      tags:
+      - SmallStats
+  /Statistics/Small/AverageFeature:
+    post:
+      operationId: getAverageFeatureStat
+      parameters:
+      - explode: true
+        in: query
+        name: feature
+        required: true
+        schema:
+          enum:
+          - valence
+          - energy
+          - danceability
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmallStatRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmallStat'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      tags:
+      - SmallStats
+  /Statistics/Small/ListeningTime:
+    post:
+      operationId: getListeningTime
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmallStatRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmallStat'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      tags:
+      - SmallStats
+  /Statistics/Small/TimeSpent:
+    post:
+      operationId: getTimeSpent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmallStatRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmallStat'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error
+      tags:
+      - SmallStats
+components:
+  responses:
+    SmallStatResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SmallStat'
+      description: OK
+    UnauthorizedResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+      description: Unauthorized
+    GenericErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+      description: Error
+  schemas:
+    ApiAudioFeatures:
+      example:
+        mode: 0
+        tempo: 7.0614014
+        valence: 5.962134
+        danceability: 6.0274563
+        key: 5
+        energy: 1.4658129
+      properties:
+        danceability:
+          format: float
+          nullable: false
+          type: number
+        energy:
+          format: float
+          nullable: false
+          type: number
+        valence:
+          format: float
+          nullable: false
+          type: number
+        key:
+          nullable: false
+          type: integer
+        mode:
+          description: 1 is major 0 is minor
+          maximum: 1
+          minimum: 0
+          nullable: false
+          type: integer
+        tempo:
+          format: float
+          nullable: false
+          type: number
+      type: object
+    ApiTrack:
+      example:
+        duration: 0
+        artist: artist
+        name: name
+        id: id
+      properties:
+        id:
+          nullable: false
+          type: string
+        name:
+          nullable: false
+          type: string
+        duration:
+          nullable: false
+          type: integer
+        artist:
+          nullable: true
+          type: string
+      type: object
+    ApiAlbum:
+      example:
+        releaseDate: 2000-01-23
+        totalTracks: 6
+        albumType: album
+        name: name
+        id: id
+        tracks:
+        - duration: 0
+          artist: artist
+          name: name
+          id: id
+        - duration: 0
+          artist: artist
+          name: name
+          id: id
+      properties:
+        id:
+          nullable: false
+          type: string
+        albumType:
+          enum:
+          - album
+          - compilation
+          - single
+          nullable: false
+          type: string
+        name:
+          nullable: false
+          type: string
+        releaseDate:
+          format: date
+          nullable: false
+          type: string
+        totalTracks:
+          nullable: false
+          type: integer
+        tracks:
+          items:
+            $ref: '#/components/schemas/ApiTrack'
+          nullable: false
+          type: array
+      type: object
+    ApiPlaybackHistoryObject:
+      example:
+        playedAt: 0
+        contextType: contextType
+        track:
+          duration: 0
+          artist: artist
+          name: name
+          id: id
+        audioFeatures:
+          mode: 0
+          tempo: 7.0614014
+          valence: 5.962134
+          danceability: 6.0274563
+          key: 5
+          energy: 1.4658129
+      properties:
+        playedAt:
+          format: int64
+          type: integer
+        track:
+          $ref: '#/components/schemas/ApiTrack'
+        contextType:
+          nullable: true
+          type: string
+        audioFeatures:
+          $ref: '#/components/schemas/ApiAudioFeatures'
+      type: object
+    Stat:
+      example:
+        prevTimeframe:
+          start: 6
+          end: 1
+        value: value
+        prevValue: prevValue
+      properties:
+        prevTimeframe:
+          $ref: '#/components/schemas/Timeframe'
+        prevValue:
+          nullable: false
+          type: string
+        value:
+          nullable: false
+          type: string
+      type: object
+    SmallStat:
+      example:
+        stat:
+          prevTimeframe:
+            start: 6
+            end: 1
+          value: value
+          prevValue: prevValue
+        heading: heading
+        icon: icon
+        id: 0
+      properties:
+        id:
+          nullable: false
+          type: integer
+        heading:
+          nullable: false
+          type: string
+        icon:
+          nullable: false
+          type: string
+        stat:
+          $ref: '#/components/schemas/Stat'
+      type: object
+    SmallStatRequest:
+      example:
+        playbackHistory:
+        - playedAt: 0
+          contextType: contextType
+          track:
+            duration: 0
+            artist: artist
+            name: name
+            id: id
+          audioFeatures:
+            mode: 0
+            tempo: 7.0614014
+            valence: 5.962134
+            danceability: 6.0274563
+            key: 5
+            energy: 1.4658129
+        - playedAt: 0
+          contextType: contextType
+          track:
+            duration: 0
+            artist: artist
+            name: name
+            id: id
+          audioFeatures:
+            mode: 0
+            tempo: 7.0614014
+            valence: 5.962134
+            danceability: 6.0274563
+            key: 5
+            energy: 1.4658129
+        timeframe:
+          start: 6
+          end: 1
+        prevTimeframe:
+          start: 6
+          end: 1
+        accessToken: accessToken
+      properties:
+        accessToken:
+          nullable: false
+          type: string
+        playbackHistory:
+          items:
+            $ref: '#/components/schemas/ApiPlaybackHistoryObject'
+          type: array
+        timeframe:
+          $ref: '#/components/schemas/Timeframe'
+        prevTimeframe:
+          $ref: '#/components/schemas/Timeframe'
+      type: object
+    StatRequest:
+      example:
+        album:
+          releaseDate: 2000-01-23
+          totalTracks: 6
+          albumType: album
+          name: name
+          id: id
+          tracks:
+          - duration: 0
+            artist: artist
+            name: name
+            id: id
+          - duration: 0
+            artist: artist
+            name: name
+            id: id
+        accessToken: accessToken
+        track:
+          duration: 0
+          artist: artist
+          name: name
+          id: id
+      properties:
+        accessToken:
+          nullable: false
+          type: string
+        track:
+          $ref: '#/components/schemas/ApiTrack'
+        album:
+          $ref: '#/components/schemas/ApiAlbum'
+      type: object
+    BoxStat:
+      example:
+        icon: icon
+        description: description
+        title: title
+      properties:
+        title:
+          nullable: false
+          type: string
+        description:
+          nullable: false
+          type: string
+        icon:
+          nullable: false
+          type: string
+      type: object
+    Timeframe:
+      example:
+        start: 6
+        end: 1
+      properties:
+        start:
+          format: int64
+          nullable: false
+          type: integer
+        end:
+          format: int64
+          nullable: false
+          type: integer
+      type: object
+    ApiError:
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+      type: object
+    getSlowBoxStats_request:
+      properties:
+        track:
+          $ref: '#/components/schemas/ApiTrack'
+        accessToken:
+          nullable: false
+          type: string
