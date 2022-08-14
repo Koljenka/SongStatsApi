@@ -1,13 +1,8 @@
-package de.knagel.songstatsapi.analyser
+package de.knagel.songstats.analyzer
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import de.knagel.songstatsapi.model.BoxStat
-import de.knagel.songstatsapi.model.TopTrackDayResponse
-import de.knagel.songstatsapi.model.TopTrackMonth
-import de.knagel.songstatsapi.model.requests.StatRequest
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import de.knagel.songstats.model.*
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.InputStreamReader
@@ -18,23 +13,23 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
-class PersonalSongStatsAnalyzer(private val request: StatRequest) {
-    fun analyseAll(): List<BoxStat> {
+object PersonalSongStatAnalyzer {
+    fun analyseAll(request: GetSlowBoxStatsRequest): List<BoxStat> {
         return listOfNotNull(
-            analyseIsTopSongForDays(),
-            analyseIsTopSongForMonths()
+            analyseIsTopSongForDays(request),
+            analyseIsTopSongForMonths(request)
         )
     }
 
-    private fun analyseIsTopSongForDays(): BoxStat? {
-        val response = callPlaybackApi("isTopTrackForDays")
+    private fun analyseIsTopSongForDays(request: GetSlowBoxStatsRequest): BoxStat? {
+        val response = callPlaybackApi("TopTrackForDays", request)
         val res = ObjectMapper().readValue(response, TopTrackDayResponse::class.java)
         if (res.days > 0) {
             val startDate =
                 LocalDate.now().minusDays(res.days.toLong()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
             return BoxStat(
                 "On Repeat!",
-                "${request.track.name} has been your top song for the last ${res.days} days<br \\>" +
+                "${request.track?.name} has been your top song for the last ${res.days} days<br \\>" +
                         "You've listened to it ${res.plays} times since $startDate",
                 "repeat"
             )
@@ -42,8 +37,8 @@ class PersonalSongStatsAnalyzer(private val request: StatRequest) {
         return null;
     }
 
-    private fun analyseIsTopSongForMonths(): BoxStat? {
-        val response = callPlaybackApi("isTopTrackForMonths")
+    private fun analyseIsTopSongForMonths(request: GetSlowBoxStatsRequest): BoxStat? {
+        val response = callPlaybackApi("GetMonthsWhereTrackIsTop", request)
         val res = ObjectMapper().registerModule(JavaTimeModule()).readValue(response, Array<TopTrackMonth>::class.java).toCollection(ArrayList())
         res.reverse()
         if (res.isEmpty()) {
@@ -52,19 +47,20 @@ class PersonalSongStatsAnalyzer(private val request: StatRequest) {
         val (title, icon) = getTopTrackMonthTitleAndIconByMonths(res.size)
         return BoxStat(
             title,
-            getTopTrackMonthDescription(res),
+            getTopTrackMonthDescription(res, request),
             icon
         )
     }
 
-    private fun callPlaybackApi(path: String): String {
-        val url = URL("https://kolkie.de/spotify-playback-api/$path");
-        val body = "{\"access_token\": \"${request.accessToken}\", \"track_id\": \"${request.track.id}\"}"
+    private fun callPlaybackApi(path: String, request: GetSlowBoxStatsRequest): String {
+        val url = URL("https://kolkie.de/spotify-api/Track/${request.track?.id}/$path");
+        val body = "{\"access_token\": \"${request.accessToken}\", \"track_id\": \"${request.track?.id}\"}"
         with(url.openConnection() as HttpURLConnection) {
-            requestMethod = "POST"
+            requestMethod = "GET"
             doOutput = true
             setRequestProperty("Content-Type", "application/json")
             setRequestProperty("Content-Length", body.length.toString())
+            setRequestProperty("accessToken", request.accessToken)
 
             DataOutputStream(outputStream).use { it.writeBytes(body) }
 
@@ -80,18 +76,18 @@ class PersonalSongStatsAnalyzer(private val request: StatRequest) {
             else -> "Evergreen" to "favorite"
         }
     }
-    private fun getTopTrackMonthDescription(topTrackMonths: ArrayList<TopTrackMonth>): String {
+    private fun getTopTrackMonthDescription(topTrackMonths: ArrayList<TopTrackMonth>, request: GetSlowBoxStatsRequest): String {
         return when (topTrackMonths.size) {
             1 -> {
                 val date = topTrackMonths[0].firstDate.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH))
-                "${request.track.name} has been your top song in $date. You played it ${topTrackMonths[0].count} times"
+                "${request.track?.name} has been your top song in $date. You played it ${topTrackMonths[0].count} times"
             }
             else -> {
-                var string = "${request.track.name} has been your top song for ${topTrackMonths.size} months:<ul>"
-                      topTrackMonths.forEach {
-                          val date = it.firstDate.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH))
-                          string += "<li>$date: ${it.count} plays</li>"
-                      }
+                var string = "${request.track?.name} has been your top song for ${topTrackMonths.size} months:<ul>"
+                topTrackMonths.forEach {
+                    val date = it.firstDate.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH))
+                    string += "<li>$date: ${it.count} plays</li>"
+                }
                 "$string</ul>"
             }
         }

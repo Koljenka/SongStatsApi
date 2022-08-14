@@ -1,13 +1,12 @@
-package de.knagel.songstatsapi.analyser
+package de.knagel.songstats.analyzer
 
-import de.knagel.songstatsapi.model.BoxStat
-import de.knagel.songstatsapi.model.requests.StatRequest
+import de.knagel.songstats.model.BoxStat
+import de.knagel.songstats.model.StatRequest
 import java.util.concurrent.TimeUnit
 
-object AlbumAnalyser {
-
+object AlbumAnalyzer {
     fun analyseAll(statRequest: StatRequest): List<BoxStat> =
-        if (statRequest.album.totalTracks < 2) emptyList()
+        if (statRequest.album?.totalTracks ?: 0 < 2) emptyList()
         else listOfNotNull(
             analyseIsSongLongest(statRequest),
             analyseIsSongShortest(statRequest)
@@ -15,10 +14,10 @@ object AlbumAnalyser {
 
     private fun analyseIsSongLongest(statRequest: StatRequest): BoxStat? {
         val (_, track, album) = statRequest
-        if (album.tracks.maxByOrNull { t -> t.duration }?.id == track.id) {
+        if (album?.tracks?.maxByOrNull { t -> t.duration ?: 0 }?.id == track?.id) {
             return BoxStat(
-                msToTime(track.duration.toLong()),
-                "No other song in ${album.name} is as long as ${track.name}",
+                msToTime(track?.duration?.toLong() ?: 0),
+                "No other song in ${album?.name} is as long as ${track?.name}",
                 "access_time"
             )
         }
@@ -27,10 +26,10 @@ object AlbumAnalyser {
 
     private fun analyseIsSongShortest(statRequest: StatRequest): BoxStat? {
         val (_, track, album) = statRequest
-        if (album.tracks.minByOrNull { t -> t.duration }?.id == track.id) {
+        if (album?.tracks?.minByOrNull { t -> t.duration ?: Int.MAX_VALUE }?.id == track?.id) {
             return BoxStat(
-                msToTime(track.duration.toLong()),
-                "No other song in ${album.name} is as short as ${track.name}",
+                msToTime(track?.duration?.toLong() ?: 0),
+                "No other song in ${album?.name} is as short as ${track?.name}",
                 "access_time"
             )
         }

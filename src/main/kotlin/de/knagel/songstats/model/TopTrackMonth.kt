@@ -1,4 +1,4 @@
-package de.knagel.songstatsapi.model
+package de.knagel.songstats.model
 
 import java.time.LocalDate
 import java.util.*

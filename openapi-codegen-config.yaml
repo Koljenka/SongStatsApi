@@ -1,0 +1,13 @@
+additionalProperties:
+  apiPackage: de.knagel.songstats.api
+  artifactId: songstats-api
+  basePackage: de.knagel.songstats
+  groupId: de.knagel
+  interfaceOnly: false
+  modelPackage: de.knagel.songstats.model
+  packageName: de.knagel.songstats
+  serviceInterface: true
+  serviceImplementation: true
+  title: SongStatsApi
+  useSwaggerUI: true
+  artifactVersion: 2.0.1

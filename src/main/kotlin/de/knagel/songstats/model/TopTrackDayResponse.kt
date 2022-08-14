@@ -1,4 +1,4 @@
-package de.knagel.songstatsapi.model
+package de.knagel.songstats.model
 
 @Suppress("unused") // is used by jackson to convert from json
 data class TopTrackDayResponse(
