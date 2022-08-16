@@ -54,15 +54,11 @@ object PersonalSongStatAnalyzer {
 
     private fun callPlaybackApi(path: String, request: GetSlowBoxStatsRequest): String {
         val url = URL("https://kolkie.de/spotify-api/Track/${request.track?.id}/$path");
-        val body = "{\"access_token\": \"${request.accessToken}\", \"track_id\": \"${request.track?.id}\"}"
         with(url.openConnection() as HttpURLConnection) {
             requestMethod = "GET"
             doOutput = true
-            setRequestProperty("Content-Type", "application/json")
-            setRequestProperty("Content-Length", body.length.toString())
+            setRequestProperty("accept", "application/json")
             setRequestProperty("accessToken", request.accessToken)
-
-            DataOutputStream(outputStream).use { it.writeBytes(body) }
 
             BufferedReader(InputStreamReader(inputStream)).use { return it.readText() }
         }

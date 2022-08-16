@@ -36,6 +36,7 @@ import kotlin.collections.Map
 @RestController
 @Validated
 @RequestMapping("\${api.base-path:/spotify-api}")
+@CrossOrigin(origins = ["*"])
 class StatisticsApiController(@Autowired(required = true) val service: StatisticsApiService) {
 
     @Operation(

@@ -5,6 +5,7 @@ import de.knagel.songstats.analyzer.PersonalSongStatAnalyzer
 import de.knagel.songstats.model.*
 import org.springframework.stereotype.Service
 import java.time.Duration
+import java.util.stream.Collectors
 
 @Service
 class StatisticsApiServiceImpl : StatisticsApiService {
@@ -119,8 +120,8 @@ class StatisticsApiServiceImpl : StatisticsApiService {
         timeframe: Timeframe?
     ): List<ApiPlaybackHistoryObject> {
         return playbackHistory?.parallelStream()?.filter {
-            it.playedAt ?: 0 <= timeframe?.end ?: 0 && it.playedAt ?: 0 >= timeframe?.start ?: 0
-        }?.toList() ?: emptyList()
+            (it.playedAt ?: 0) <= (timeframe?.end ?: 0) && (it.playedAt ?: 0) >= (timeframe?.start ?: 0)
+        }?.collect(Collectors.toList()) ?: emptyList()
     }
 
     fun Duration.toTimeString(): String {
