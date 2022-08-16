@@ -137,7 +137,7 @@ class StatisticsApiServiceImpl : StatisticsApiService {
         return string
     }
 
-    fun Timeframe.toDuration(): Duration = Duration.ofMillis(end?.minus(start ?: 0) ?: 0)
+    fun Timeframe.toDuration(): Duration = Duration.ofSeconds(end?.minus(start ?: 0) ?: 0)
 
     fun ApiAudioFeatures.getByName(name: String): Float? = when (name) {
         "danceability" -> danceability
